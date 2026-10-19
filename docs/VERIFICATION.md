@@ -1,5 +1,13 @@
 # Verification record
 
+## Latest server update: Compose and partial-result recovery
+
+On **2026-10-19**, application revision `85e53bc96c90495dd637501e2eeaf0c63186ee6e` passed **69 tests** and all **12 synthetic functional scenarios** directly on `nik@192.168.0.15` (Python 3.12). Eight new regression cases cover recoverable expansion failure and errors that must still fail. [GitHub Actions run 39209785763](https://github.com/MelNikVl/aiclim/actions/runs/39209785763) also passed tests, scenarios, JavaScript syntax, Compose configuration, Docker build and container smoke.
+
+The server now runs the Compose-managed `tastedistrict:local` image, ID `sha256:6d34273bb54010ec0a2a8bba21bbd8b2739f2af6cb1d94d29dda8c81849b390f`. Docker reports `healthy` with restart policy `unless-stopped`; `/health` and `/api/config` pass in Demo mode. The previous manual container is retained stopped as `tastedistrict-pre-compose`, with automatic restart disabled, for migration rollback. The existing private `.env` and application secret were preserved. Docker remains enabled on the host.
+
+The documented temporary-container smoke command was executed and correctly refused Demo mode with exit code 2; it made no Qloo calls. Real credential validity and coverage remain unverified. Earlier checks below record the initial MVP and deployment revisions.
+
 Development checks on **2026-10-19**, Python 3.11 on Windows. All test data and mocked upstream responses are authored synthetic fixtures. No authenticated Qloo response has been saved or committed.
 
 ## Verified locally
