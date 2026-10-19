@@ -55,4 +55,4 @@ These are original comparison geometry, not official neighborhoods or a licensed
 - Verify the response shapes and meaningful New York coverage; require enough unique valid places per comparison zone, otherwise return a city place list or investigate another city.
 - Complete and record the 12-scenario Qloo-versus-LLM-only evaluation with measured results and human review where relevant.
 - Confirm the organizer's policy on AI coding assistance; do not claim explicit permission from silence.
-- Verify external deployment, Docker execution, mobile behavior, quota controls, and the final dependency license inventory.
+- Verify external deployment, live quota controls, and the final image's dependency license inventory. Synthetic mobile/browser flows and Docker execution in GitHub Actions are recorded in [VERIFICATION.md](VERIFICATION.md).

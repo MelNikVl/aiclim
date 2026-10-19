@@ -15,6 +15,10 @@ Development checks on **2026-10-19**, Python 3.11 on Windows. All test data and 
 
 Local browser screenshots are in ignored `artifacts/desktop.jpg` and `artifacts/mobile.jpg`; they show synthetic data only. They are review artifacts, not Qloo response fixtures.
 
+## Verified in GitHub Actions
+
+[Validate TasteDistrict run 39207700404](https://github.com/MelNikVl/aiclim/actions/runs/39207700404), for application commit `0c6d624d3fc31f028ccd1ee328ee238ac4b2185f`, completed successfully on 2026-10-19. Package installation, dependency constraints, all tests, the 12 synthetic scenarios, JavaScript syntax, **Docker image build and container health/config smoke all passed** on Ubuntu. The image ran in Demo mode without any API credential. This verifies container construction/startup, not live Qloo behavior or a full base-image license audit.
+
 ## Not verified / blockers
 
 | Check | Status and concrete reason |
@@ -22,10 +26,10 @@ Local browser screenshots are in ignored `artifacts/desktop.jpg` and `artifacts/
 | Live Qloo smoke | **Not run**: no event key was configured. The smoke script refuses Demo mode. |
 | Real New York / three-zone coverage | **Unverified**: requires authenticated responses and independent location/existence checks. |
 | Qloo-versus-LLM-only evaluation | **Not run**: no credential or approved LLM provider. See `eval/PLAN.md`; no winner is claimed. |
-| Docker build/run | **Blocked locally**: Docker CLI 28.2.2 is installed, but the Linux Engine pipe is unavailable. Starting Docker Desktop did not establish a working daemon. `docker build` failed before executing the Dockerfile. |
+| Local Docker Engine | **Unavailable locally**: Docker CLI 28.2.2 is installed, but its Linux Engine pipe is unavailable. Local `docker build` failed before executing the Dockerfile; the image build and smoke were instead verified successfully in GitHub Actions above. |
 | External URL and judging availability | **Not published**: requires the user's separate publication/provider approval. |
 | AI coding policy / credential-specific terms | **Unresolved**: sources are recorded in `docs/SOURCES.md`. |
 
-GitHub Actions is prepared to repeat tests, the synthetic scenarios, JavaScript validation, Docker build and a container health/config smoke. This is a configured check, **not evidence that remote CI or Docker has already passed**.
+GitHub Actions repeats tests, synthetic scenarios, JavaScript validation, Docker build and a container health/config smoke on relevant branch pushes and pull requests. Future runs must be checked separately; the successful run above records the tested application revision.
 
 The authored city guard and zones are approximate comparison geometry. A place passing them does not establish independently verified municipal membership, opening status or suitability. The application does not make those claims.

@@ -2,7 +2,7 @@
 
 Inspected **2026-10-19** using `importlib.metadata` in the local Python 3.11 Windows `.venv`, including each installed distribution's license metadata and packaged license-file presence. Direct dependency versions come from `pyproject.toml`; package records link to the publisher's version-specific PyPI metadata.
 
-This inventory covers installed distributions, not every component bundled in the Python interpreter or a container base image. Docker build/run has **not** been verified: the local Docker daemon was stopped. Linux/container resolution may differ, and unpinned transitive requirements can change. Regenerate the inventory from the final deployment environment before distributing an image.
+This inventory covers installed distributions, not every component bundled in the Python interpreter or a container base image. Docker build and startup passed in [GitHub Actions](https://github.com/MelNikVl/aiclim/actions/runs/39207700404); the local Docker daemon remained unavailable. Runtime/test versions are pinned in `constraints.txt`, but platform-specific dependencies and base-image components may differ. Regenerate the inventory from the final deployment environment before distributing an image.
 
 | Distribution | Installed version | Declared license | Role |
 | --- | --- | --- | --- |
@@ -42,8 +42,8 @@ Certifi's MPL-2.0 is a file-level weak-copyleft license, so the whole dependency
 
 Each installed top-level distribution contains a license file under its `.dist-info` directory. Retain those files and relevant NOTICE/AUTHORS files in any distributed environment. Setuptools and pip also vendor components under their own notices; a tooling-inclusive distribution must retain those bundled notices. No vendor source has been copied into this repository. Python and any Docker base image have separate component licenses that must be checked for the final image.
 
-Qloo data is not an open-source dependency. Its API output, imagery and marks remain subject to Qloo and third-party terms, as recorded in [SOURCES.md](SOURCES.md). Authored exploration rectangles and synthetic fixtures introduce no imported geodata license.
+Qloo data is not an open-source dependency. Its API output, imagery and marks remain subject to Qloo and third-party terms, as recorded in [SOURCES.md](SOURCES.md). Authored exploration rectangles and synthetic fixtures introduce no imported geodata license. A successful image build is not a completed container license audit.
 
 ## Reproduce the inventory
 
-After installing the intended production and test dependencies, use Python's standard `importlib.metadata.distributions()` to enumerate `Name`, version, `License-Expression`, `License`, and distribution files containing `LICENSE` or `NOTICE`. Inspect text when metadata is ambiguous. Run `python -m pip check` to verify dependency constraints separately; that command does not verify licenses. Repeat inside the eventual Docker image, because this local inventory cannot certify an unbuilt image.
+After installing the intended production and test dependencies, use Python's standard `importlib.metadata.distributions()` to enumerate `Name`, version, `License-Expression`, `License`, and distribution files containing `LICENSE` or `NOTICE`. Inspect text when metadata is ambiguous. Run `python -m pip check` to verify dependency constraints separately; that command does not verify licenses. Repeat inside the final Docker image, because this local inventory does not certify the container's entire component set.
