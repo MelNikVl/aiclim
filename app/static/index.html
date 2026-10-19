@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f3eb" />
+    <meta name="description" content="Discover city zones through the artists, films, books and places you love. An honest, exploratory TasteDistrict demo." />
+    <title>TasteDistrict — Find your kind of somewhere.</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23d6ed73'/%3E%3Cpath d='M8 8h7v7H8zm9 0h7v7h-7zM8 17h7v7H8zm9 0h7v7h-7z' fill='%23212b25'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#taste-builder">Skip to discovery</a>
+    <header class="site-header shell">
+      <a class="wordmark" href="/" aria-label="TasteDistrict home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        TasteDistrict<span class="brand-period">.</span>
+      </a>
+      <nav class="header-links" aria-label="Main navigation"><a href="#how-it-works">How it works <span aria-hidden="true">↗</span></a><span id="mode-badge" class="mode-badge">Checking data source</span></nav>
+    </header>
+
+    <main class="shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="tiny-star" aria-hidden="true">✳</span> GOOD TASTE. NEW TERRITORY.</p>
+          <h1 id="hero-title">Find your kind<br />of <em>somewhere.</em></h1>
+          <p class="hero-description">Your favorite records, the film you keep coming back to, that book you couldn’t put down. Follow your taste to a different side of the city.</p>
+          <a class="hero-link" href="#taste-builder">Let’s find your places <span aria-hidden="true">↘</span></a>
+          <div class="hero-footnote"><span aria-hidden="true">◎</span> A little less searching. A little more you.</div>
+        </div>
+        <div class="city-art" aria-label="Abstract city illustration, not a geographic map" role="img">
+          <div class="art-top"><span>THE CITY, THROUGH YOUR LENS</span><span aria-hidden="true">↗</span></div>
+          <svg class="city-svg" viewBox="0 0 560 388" aria-hidden="true" focusable="false">
+            <defs><pattern id="city-grid" width="75" height="67" patternUnits="userSpaceOnUse" patternTransform="rotate(-24 280 194)"><rect x="6" y="6" width="60" height="50" rx="9" fill="none" stroke="#73816b" stroke-width="1" /></pattern></defs>
+            <rect width="560" height="388" fill="url(#city-grid)" opacity=".47" />
+            <path d="M-20 263 C90 200 140 319 257 244 S410 59 592 118" stroke="#3d5041" stroke-width="43" fill="none" />
+            <path d="M-20 263 C90 200 140 319 257 244 S410 59 592 118" stroke="#80917c" stroke-width="1" stroke-dasharray="4 9" fill="none" />
+            <circle cx="283" cy="188" r="96" fill="#d6ed73" opacity=".07" stroke="#d6ed73" stroke-dasharray="3 8" />
+            <circle cx="283" cy="188" r="63" fill="#d6ed73" opacity=".12" />
+            <path d="M279 153c-6-22 19-32 29-13 17-17 37 1 25 20 25 3 26 30 2 35 17 17 2 38-19 28-1 24-27 27-34 4-19 16-40-1-27-20-25-6-22-33 2-36-15-17 2-37 22-18Z" fill="#d6ed73" />
+            <circle cx="293" cy="183" r="11" fill="#29382e" />
+            <path d="m182 283 10-17 10 17h-20m201-179h19m-9-10v20" stroke="#d6ed73" stroke-width="2" fill="none" />
+            <circle cx="130" cy="116" r="5" fill="#d6ed73" /><circle cx="423" cy="281" r="5" fill="#d6ed73" />
+          </svg>
+          <span class="art-label art-label-music"><span aria-hidden="true">♫</span> Your music</span>
+          <span class="art-label art-label-film"><span aria-hidden="true">◉</span> Your films</span>
+          <span class="art-label art-label-books"><span aria-hidden="true">▤</span> Your books</span>
+          <div class="art-bottom"><p>There’s a place<br /><em>for your kind of person.</em></p><span class="art-compass" aria-hidden="true">N<br />↗</span></div>
+        </div>
+      </section>
+
+      <aside class="data-notice" id="data-notice" aria-label="Data source notice"><span class="notice-icon" aria-hidden="true">i</span><p id="data-notice-text">Connecting to the discovery service…</p><button id="about-data-button" type="button" aria-expanded="false" aria-controls="data-details">About the data <span aria-hidden="true">↗</span></button></aside>
+      <section id="data-details" class="data-details" aria-labelledby="data-details-title" hidden><h2 id="data-details-title">Know what you’re exploring.</h2><ul id="data-details-list"></ul><p>Discovery zones are authored comparison areas. App scores rank suggestions within a request; they are not probabilities of compatibility. This experience makes no claims about safety, housing prices, opening hours or travel times.</p></section>
+
+      <section class="builder" id="taste-builder" aria-labelledby="builder-title">
+        <div class="builder-heading"><div><p class="eyebrow">START WITH WHAT YOU LOVE</p><h2 id="builder-title">What feels like you?</h2></div><span class="step-stamp">01 / YOUR TASTE</span></div>
+        <form id="discovery-form" novalidate>
+          <div class="city-row"><label for="city-select"><span aria-hidden="true">◎</span> I’m exploring</label><select id="city-select" name="city" disabled><option value="">Loading cities…</option></select><span class="city-note">One city. Many ways to belong.</span></div>
+          <div class="taste-entry-heading"><label for="entity-search" id="search-label">Add 3–5 favorites</label><span id="taste-counter" class="taste-counter">0 / 5 selected</span></div>
+          <div id="replace-notice" class="replace-notice" hidden><span id="replace-text"></span><button id="cancel-replace" type="button" class="text-button">Cancel</button></div>
+          <div class="search-row"><label class="sr-only" for="category-select">Favorite category</label><select id="category-select" name="category"><option value="artist">Music artists</option><option value="movie">Films</option><option value="book">Books</option><option value="place">Places</option></select><div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg><input id="entity-search" type="search" placeholder="Search for an artist you love…" autocomplete="off" maxlength="100" aria-describedby="search-help search-status" aria-controls="search-results" /><span id="search-spinner" class="spinner" hidden aria-hidden="true"></span></div></div>
+          <div class="search-suggestions" id="search-suggestions"><span>Need a starting point?</span><button type="button" data-query="Nina Simone" data-category="artist">Nina Simone <span aria-hidden="true">↗</span></button><button type="button" data-query="Amélie" data-category="movie">Amélie <span aria-hidden="true">↗</span></button><button type="button" data-query="The Little Prince" data-category="book">The Little Prince <span aria-hidden="true">↗</span></button></div>
+          <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+          <ul id="search-results" class="search-results" aria-label="Matching favorites" hidden></ul>
+          <div id="selected-tastes" class="selected-tastes" aria-label="Your selected favorites"></div>
+          <p id="search-help" class="helper-text">Choose the exact match from search. Mix music, films, books and places—or stay in one category.</p>
+          <div class="builder-footer"><div><p id="selection-hint" class="selection-hint">A good discovery starts with 3 favorites.</p><p class="small-muted">No account. Just a little curiosity.</p></div><button id="discover-button" class="primary-button" type="submit" disabled><span id="discover-button-label">Find my places</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+        </form>
+        <div id="app-error" class="error-notice" role="alert" hidden><span id="app-error-text"></span><button id="retry-config" type="button" class="text-button" hidden>Try again</button><button id="reset-scenario" type="button" class="text-button" hidden>Start new scenario</button></div>
+      </section>
+
+      <section id="results-section" class="results-section" aria-labelledby="results-title" hidden>
+        <div class="results-heading"><div><p class="eyebrow">A DIFFERENT WAY INTO THE CITY</p><h2 id="results-title" tabindex="-1">Your next favorite corner.</h2><p id="results-summary" class="results-summary"></p></div><span class="step-stamp">02 / YOUR DISCOVERIES</span></div>
+        <div id="changes-panel" class="changes-panel" hidden><div><span class="tiny-star" aria-hidden="true">✳</span><h3>A small change. A new perspective.</h3></div><p id="changes-message"></p><div id="changes-items" class="changes-items"></div></div>
+        <div id="results-loading" class="results-loading" role="status" hidden><span class="spinner" aria-hidden="true"></span><span>Following your taste through the city…</span></div>
+        <div id="zone-cards" class="zone-cards"></div>
+        <div class="results-actions"><p>Try a different favorite above to see what changes.</p><button id="reset-exclusions" type="button" class="text-button" hidden>Restore excluded places</button><button id="clear-session" type="button" class="text-button">Start fresh <span aria-hidden="true">↗</span></button></div>
+        <div class="result-notes"><section class="workflow-panel" aria-labelledby="workflow-title"><div class="panel-heading"><h3 id="workflow-title">Behind the discovery</h3><span id="usage-summary" class="usage-summary"></span></div><p class="panel-intro">A short record of what the service actually did.</p><ol id="workflow-log" class="workflow-log"></ol></section><section class="limits-panel" id="data-limits" aria-labelledby="limits-title"><h3 id="limits-title">A little context goes a long way.</h3><ul id="warnings-list"></ul><p class="score-note">App scores rank these suggestions within this request. They are not compatibility probabilities.</p><p id="request-id" class="request-id"></p></section></div>
+      </section>
+
+      <section class="how-it-works" id="how-it-works" aria-labelledby="how-title"><div class="how-intro"><p class="eyebrow">CULTURE IS A COMPASS</p><h2 id="how-title">Follow what<br />moves you.</h2></div><div class="how-steps"><article><span class="how-number">01</span><h3>Bring your favorites.</h3><p>A few things you love give your exploration a starting point.</p></article><article><span class="how-number">02</span><h3>Meet a different city.</h3><p>Explore up to three discovery zones, with individual places and reasons to look closer.</p></article><article><span class="how-number">03</span><h3>Change the lens.</h3><p>Swap a favorite or exclude a place. See how your next set of suggestions changes.</p></article></div></section>
+    </main>
+    <footer class="site-footer shell"><a class="wordmark footer-wordmark" href="/">TasteDistrict<span class="brand-period">.</span></a><p>Made for the beautifully particular.</p><a href="#taste-builder">Find your somewhere <span aria-hidden="true">↑</span></a></footer>
+    <noscript><p class="noscript-notice">TasteDistrict needs JavaScript to search favorites and show discoveries. Please enable it and reload.</p></noscript>
+  </body>
+</html>
