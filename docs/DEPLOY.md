@@ -12,12 +12,44 @@ Connect and inspect only this application:
 ssh nik@192.168.0.15
 cd /home/nik/tastedistrict
 docker ps --filter 'name=^/tastedistrict$'
-docker logs --tail 100 tastedistrict
+docker compose ps
+docker compose logs --tail 100 tastedistrict
 ```
 
-Restart the existing application with `docker restart tastedistrict`. This resets its in-memory sessions and request counters. Check `curl --fail http://192.168.0.15:8000/health` and the browser afterward. Do not restart or prune the Docker host or operate on unrelated containers.
+Before the first deployment, `ss -ltn` showed no listener on TCP port **8000**, and no running Docker container published it. After deployment, `ss -ltn '( sport = :8000 )'` and `docker ps --filter publish=8000` show only TasteDistrict at `192.168.0.15:8000`. Repeat those checks before changing the binding.
 
-For an update, review the changes on `codex/tastedistrict-mvp` and select its exact commit before transferring or checking out source in this directory. Preserve the private server `.env`; do not print or copy its values into Git or chat. Build a new image tagged with the reviewed commit, retain the previous image for rollback, and replace only the `tastedistrict` container. Keep the same environment file, single worker and host binding `192.168.0.15:8000:8000`. Retain the current runtime restrictions: `--restart unless-stopped --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges --cpus 1 --memory 256m --init`. Recheck health, `/api/config`, visible Demo labels and a complete selection/recommendation flow. A successful build alone does not verify the UI.
+`compose.yaml` now records the dedicated container, LAN binding, restart policy, read-only filesystem, temporary `/tmp`, dropped capabilities, no-new-privileges, one CPU, 256 MB memory, bounded logs and process health check. It manages this application only. Do not restart or prune the Docker host or operate on unrelated services.
+
+### Apply a key or another environment-only change
+
+Edit `/home/nik/tastedistrict/.env` privately with `nano .env`; keep the existing `APP_SECRET`. Use the [official event key request form](https://forms.gle/zz12orkLHTAneLGz6) to obtain an event-issued credential. Set `QLOO_API_KEY` and `DATA_MODE=live`; keep `QLOO_BASE_URL=https://hackathon.api.qloo.com`. Check credential terms/quota before making live requests.
+
+```sh
+docker compose config --quiet
+docker compose run --rm --no-deps --entrypoint python \
+  -v "$PWD/scripts:/smoke:ro" tastedistrict /smoke/live_smoke.py
+# Continue only if the live check passes:
+docker compose up -d --force-recreate
+curl --fail http://192.168.0.15:8000/api/config
+```
+
+The smoke uses the updated environment in a temporary container without publishing another port. It makes bounded real Qloo calls and emits summaries only. If it fails, the currently running service keeps its old environment; resolve the key/schema/coverage problem before recreating it. Configured live mode alone is not evidence of successful authentication.
+
+**`docker restart` / `docker compose restart` does not reload changed environment variables.** Recreate the service with `docker compose up -d --force-recreate`. An environment-only edit needs no image rebuild. See [Docker's restart documentation](https://docs.docker.com/reference/cli/docker/compose/restart/) and [up documentation](https://docs.docker.com/reference/cli/docker/compose/up/). Never print `docker compose config` without `--quiet`, because it can expose resolved secrets.
+
+### Update application source
+
+Review the exact passing revision, preserve the private `.env`, then update this checkout from `main` and run:
+
+```sh
+docker compose config --quiet
+docker compose build
+docker compose up -d --force-recreate
+docker compose ps
+curl --fail http://192.168.0.15:8000/health
+```
+
+Retain the previous reviewed image for rollback and record the new image/revision in `VERIFICATION.md`. Recheck `/api/config`, data labels and a complete browser selection/recommendation flow. The health check verifies the process, not Qloo coverage. A plain restart is suitable only when intentionally keeping the same image/environment.
 
 The server `.env` has mode `600` and a generated persistent `APP_SECRET`; its value was not exposed. Keep `DATA_MODE=demo`, `LLM_PROVIDER=none`, and no Qloo key until an event credential is available and its terms and live schema are checked. Binding specifically to the LAN address limits the published interface. No router, DNS, TLS or public ingress change is part of this LAN deployment.
 

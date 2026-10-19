@@ -7,6 +7,15 @@ from app.models import (
     Changes, Coverage, Entity, RecommendRequest, RecommendResponse, Usage, WorkflowStep,
 )
 from app.ranking import city_wide_picks, eligible_places, rank_zones, zone_for
+from app.security import AppError
+
+
+EXPANSION_LIMITS = {
+    "qloo_timeout": "Qloo did not respond in time",
+    "qloo_busy": "Qloo was busy or rate limited",
+    "scenario_budget": "the scenario request budget was reached",
+    "global_budget": "the upstream request allowance was reached",
+}
 
 
 async def run_workflow(entities: list[Entity], request: RecommendRequest, adapter, budget) -> RecommendResponse:
@@ -40,13 +49,25 @@ async def run_workflow(entities: list[Entity], request: RecommendRequest, adapte
         warnings.insert(0, "Demo data: all venues, coordinates and affinities are synthetic. This is not a live Qloo result.")
     if len(eligible) < 6 or zone_count < 3 or supported_zone_count < 2:
         if getattr(budget, "used", 0) < getattr(budget, "max_requests", 10):
-            additional = await adapter.recommend(entities, CITY, excluded, budget, expand=True)
-            candidates.extend(additional)
-            eligible = eligible_places(candidates, excluded)
-            steps.append(WorkflowStep(
-                step="Expand search", status="completed",
-                detail=f"Made one broader candidate request after finding {initial_eligible} eligible places across {zone_count} zones. Received {len(additional)} additional candidates.",
-            ))
+            try:
+                additional = await adapter.recommend(entities, CITY, excluded, budget, expand=True)
+            except AppError as exc:
+                reason = EXPANSION_LIMITS.get(exc.code)
+                if reason is None:
+                    raise
+                # Preserve validated primary results; never echo upstream messages.
+                warnings.append(f"Optional expansion unavailable: {reason}. Only validated candidates from the first request were retained; coverage may be limited.")
+                steps.append(WorkflowStep(
+                    step="Expand search", status="limited",
+                    detail=f"The optional expansion could not finish because {reason}. Retained validated candidates from the first request ({initial_eligible}).",
+                ))
+            else:
+                candidates.extend(additional)
+                eligible = eligible_places(candidates, excluded)
+                steps.append(WorkflowStep(
+                    step="Expand search", status="completed",
+                    detail=f"Made one broader candidate request after finding {initial_eligible} eligible places across {zone_count} zones. Received {len(additional)} additional candidates.",
+                ))
         else:
             steps.append(WorkflowStep(step="Expand search", status="limited", detail="The request budget was exhausted; no additional request was made."))
     else:

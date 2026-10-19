@@ -9,6 +9,7 @@ from pydantic import ValidationError
 from app.data import CITY, DEMO_ENTITIES, DemoAdapter
 from app.models import Place, RecommendRequest
 from app.ranking import eligible_places, rank_zones
+from app.security import AppError
 from app.workflow import run_workflow
 
 
@@ -151,6 +152,68 @@ def test_exhausted_budget_skips_expansion():
     assert adapter.calls == [False]
     assert result.usage.qloo_requests == 10
     assert any(step.step == "Expand search" and step.status == "limited" for step in result.workflow)
+
+
+class ExpansionFailureAdapter(SparseAdapter):
+    def __init__(self, failure, candidates=None, fail_primary=False):
+        super().__init__(candidates)
+        self.failure = failure
+        self.fail_primary = fail_primary
+
+    async def recommend(self, entities, city, excluded, budget, expand=False):
+        budget.consume()
+        self.calls.append(expand)
+        if expand or self.fail_primary:
+            raise self.failure
+        return list(self.candidates)
+
+
+@pytest.mark.parametrize("code", ["qloo_timeout", "qloo_busy", "scenario_budget", "global_budget"])
+def test_recoverable_expansion_failure_keeps_only_validated_primary_places(code):
+    sensitive_message = "synthetic-private-key raw upstream response must not appear"
+    adapter = ExpansionFailureAdapter(AppError(code, sensitive_message, 503), [
+        place("keep", score=.9), place("keep", score=.8),
+        place("excluded", 40.721, -74.001),
+        place("wrong-city", 34.0522, -118.2437),
+    ])
+    result = run(run_workflow(interests(), request(excluded_place_ids=["excluded"]), adapter, Budget()))
+    assert adapter.calls == [False, True]
+    assert displayed_ids(result) == ["keep"]
+    assert result.coverage.eligible_places == 1
+    assert result.zones[0].places[0].score == 90
+    assert result.usage.qloo_requests == 2
+    expansion = next(step for step in result.workflow if step.step == "Expand search")
+    assert expansion.status == "limited"
+    assert "Retained validated candidates from the first request (1)" in expansion.detail
+    assert any("Optional expansion unavailable" in warning for warning in result.warnings)
+    assert sensitive_message not in result.model_dump_json()
+
+
+@pytest.mark.parametrize("code", ["qloo_auth", "qloo_schema"])
+def test_auth_and_schema_errors_in_optional_expansion_still_fail(code):
+    failure = AppError(code, "Synthetic nonrecoverable error", 502)
+    adapter = ExpansionFailureAdapter(failure, [place("initial")])
+    with pytest.raises(AppError) as error:
+        run(run_workflow(interests(), request(), adapter, Budget()))
+    assert error.value is failure
+    assert adapter.calls == [False, True]
+
+
+def test_programming_exception_in_optional_expansion_still_fails():
+    failure = RuntimeError("Synthetic programming error")
+    adapter = ExpansionFailureAdapter(failure, [place("initial")])
+    with pytest.raises(RuntimeError) as error:
+        run(run_workflow(interests(), request(), adapter, Budget()))
+    assert error.value is failure
+
+
+def test_primary_request_failure_is_not_recovered():
+    failure = AppError("qloo_timeout", "Synthetic primary timeout", 504)
+    adapter = ExpansionFailureAdapter(failure, fail_primary=True)
+    with pytest.raises(AppError) as error:
+        run(run_workflow(interests(), request(), adapter, Budget()))
+    assert error.value is failure
+    assert adapter.calls == [False]
 
 
 def test_explanations_preserve_only_literal_source_evidence():

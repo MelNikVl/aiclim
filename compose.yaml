@@ -1,0 +1,31 @@
+services:
+  tastedistrict:
+    build: .
+    image: tastedistrict:local
+    container_name: tastedistrict
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    cpus: 1
+    mem_limit: 256m
+    env_file:
+      - .env
+    ports:
+      - "${TASTEDISTRICT_BIND_ADDRESS:-192.168.0.15}:${TASTEDISTRICT_PORT:-8000}:8000"
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "2"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; r=json.load(urllib.request.urlopen('http://127.0.0.1:8000/health',timeout=3)); assert r['status']=='ok'"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3

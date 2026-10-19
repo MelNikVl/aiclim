@@ -6,4 +6,6 @@
 - Keep credentials in the private server `.env`, never in source, browser code, prompts, logs or committed response fixtures. Preserve the existing environment file on updates without printing it.
 - Use clearly labeled synthetic Demo data until the event credential and real API behavior have been verified. Do not claim real city coverage, a completed LLM comparison or submission readiness from synthetic tests.
 - User approval for LAN deployment and the existing draft PR is recorded in this chat. External publication, new accounts, paid resources and repository visibility changes remain separate actions requiring the user's authorization.
+- The user authorizes merging this project's reviewed pull requests after checks pass. Merge the checked head revision without requesting routine confirmation again. Keep external publication and spending approvals separate.
+- Use `docker compose` for server operations. Recreate the application after `.env` changes; restarting the existing container does not reload its environment. Never print resolved Compose configuration containing secrets; use `docker compose config --quiet` for validation.
 - Record the deployed application revision, image and observed checks in `docs/VERIFICATION.md`. A documentation-only checkout update does not require rebuilding an unchanged application image.
