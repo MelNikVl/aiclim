@@ -1,0 +1,14 @@
+[
+  {"id":"01-mixed-starter","interests":["demo:nina-simone","demo:amelie","demo:little-prince"]},
+  {"id":"02-change-one-artist","interests":["demo:radiohead","demo:amelie","demo:little-prince"],"compare_to":"01-mixed-starter"},
+  {"id":"03-cinema-books","interests":["demo:spirited-away","demo:in-the-mood","demo:beloved"]},
+  {"id":"04-record-collectors","interests":["demo:radiohead","demo:khruangbin","demo:nina-simone"]},
+  {"id":"05-electronic-art","interests":["demo:daft-punk","demo:bjork","demo:spirited-away"]},
+  {"id":"06-dune-disambiguation","interests":["demo:dune-movie","demo:dune-book","demo:left-hand"]},
+  {"id":"07-fictional-place-seed","interests":["demo:juniper","demo:red-kite","demo:beloved"]},
+  {"id":"08-five-favorites","interests":["demo:nina-simone","demo:amelie","demo:little-prince","demo:khruangbin","demo:beloved"]},
+  {"id":"09-one-exclusion","interests":["demo:nina-simone","demo:amelie","demo:little-prince"],"exclude":["demo:place-18"]},
+  {"id":"10-sparse-zones","interests":["demo:radiohead","demo:amelie","demo:little-prince"],"exclude":["demo:place-01","demo:place-02","demo:place-03","demo:place-04","demo:place-05","demo:place-06","demo:place-07","demo:place-08","demo:place-09","demo:place-10","demo:place-11","demo:place-12"]},
+  {"id":"11-empty-results","interests":["demo:radiohead","demo:amelie","demo:little-prince"],"exclude":["demo:place-01","demo:place-02","demo:place-03","demo:place-04","demo:place-05","demo:place-06","demo:place-07","demo:place-08","demo:place-09","demo:place-10","demo:place-11","demo:place-12","demo:place-13","demo:place-14","demo:place-15","demo:place-16","demo:place-17","demo:place-18"]},
+  {"id":"12-literary-tastes","interests":["demo:beloved","demo:left-hand","demo:little-prince"]}
+]

@@ -1,0 +1,39 @@
+name: Validate TasteDistrict
+on:
+  pull_request:
+  push:
+    branches: [main, "codex/**"]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -c constraints.txt -e '.[test]'
+      - run: python -m pip check
+      - run: python -m pytest -q
+      - run: python scripts/evaluate.py
+      - run: node --check app/static/app.js
+      - run: docker build -t tastedistrict:ci .
+      - name: Container smoke
+        shell: bash
+        run: |
+          docker run --detach --name tastedistrict-ci -p 8000:8000 -e DATA_MODE=demo tastedistrict:ci
+          trap 'docker rm -f tastedistrict-ci' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8000/health; then
+              curl --fail --silent http://127.0.0.1:8000/api/config
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs tastedistrict-ci
+          exit 1
