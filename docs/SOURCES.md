@@ -35,7 +35,7 @@ The event requires a functioning public Qloo-powered demonstration, so displayin
 
 Direct dependency metadata was checked against version-specific PyPI records: [FastAPI 0.135.1](https://pypi.org/pypi/fastapi/0.135.1/json), [HTTPX 0.28.1](https://pypi.org/pypi/httpx/0.28.1/json), [pydantic-settings 2.13.1](https://pypi.org/pypi/pydantic-settings/2.13.1/json), [Uvicorn 0.41.0](https://pypi.org/pypi/uvicorn/0.41.0/json), [pytest 9.0.2](https://pypi.org/pypi/pytest/9.0.2/json), [pytest-asyncio 1.3.0](https://pypi.org/pypi/pytest-asyncio/1.3.0/json). They declare MIT, BSD-3-Clause, or Apache-2.0 licenses. These allow integration with MIT-authored application code when their notices and other license obligations are preserved. A release must also inventory resolved transitive packages and retain their license texts; the direct dependency review alone is not a complete distribution audit.
 
-The local installed direct/transitive inventory is now recorded in [DEPENDENCIES.md](DEPENDENCIES.md), including certifi's MPL-2.0 exception to an all-permissive description. The final container inventory remains pending because Docker was not run.
+The local installed direct/transitive inventory is now recorded in [DEPENDENCIES.md](DEPENDENCIES.md), including certifi's MPL-2.0 exception to an all-permissive description. Docker build and startup succeeded in GitHub Actions and on the designated LAN server. A complete container component/license inventory remains pending; successful execution does not establish that audit.
 
 ## Authored zone and fixture provenance
 

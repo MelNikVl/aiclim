@@ -10,6 +10,10 @@ The default **Demo data** mode runs locally with 18 fictional venues and authore
 
 A server-side live adapter implements the documented event `GET /search` and `GET /v2/insights` surfaces. **No Qloo credential was available during development. Authenticated integration, city coverage, public deployment and the Qloo-versus-LLM-only comparison remain unverified. This project is not submission-ready.** Live failures never silently switch to synthetic results.
 
+## LAN server
+
+The designated development/runtime server is `nik@192.168.0.15`, with a separate checkout at `/home/nik/tastedistrict` and a dedicated `tastedistrict` container. Its LAN demo address is [192.168.0.15:8000](http://192.168.0.15:8000). Use this server for ongoing deployment and runtime checks; workstation localhost is an optional development fallback. See [deployment instructions](docs/DEPLOY.md) and the [verification record](docs/VERIFICATION.md) for observed deployment status. A LAN address is not the public hackathon demo URL.
+
 ## Run locally
 
 Python 3.11 or later:
