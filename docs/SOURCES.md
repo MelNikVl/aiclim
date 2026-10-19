@@ -2,6 +2,14 @@
 
 Checked on **2026-10-19**. This records documentation review, not a successful authenticated API test. No live Qloo response data belongs in this repository.
 
+## Get a hackathon API key
+
+The current [2026 Devpost overview](https://qloo.devpost.com/) points to the [event developer guide](https://docs.qloo.com/reference/qloo-llm-hackathon-developer-guide#getting-your-api-key). That guide's official [API key request form](https://forms.gle/zz12orkLHTAneLGz6) was rechecked on 2026-10-19. Approval is manual; the personal event credential is delivered by email, typically after a few business days. Check spam/junk if it does not arrive. This is a request process, not an instant key-generation dashboard.
+
+The form requires email, name, Devpost username, country, a project idea and the entrant's acceptance of event-use conditions; GitHub username is optional. A general TasteDistrict description is sufficient to express the project direction. Although the guide says an idea need not be finalized, the actual form marks its project-idea field as required. No registration, form submission or agreement acceptance was performed during this verification. The [Devpost Resources page](https://qloo.devpost.com/resources) also links the form, but the guide's short URL opens the respondent view without an edit-access request.
+
+This project accepts only the event host `https://hackathon.api.qloo.com`. A production or staging credential must not be assumed interchangeable. The [general API onboarding page](https://docs.qloo.com/reference/api-onboarding) describes requesting access from Qloo support; it does not document a self-service key dashboard. Use the event form for this entry and the event-specific instructions for its credential's host, quotas and expiration.
+
 ## Qloo API contract
 
 The [event developer guide](https://docs.qloo.com/reference/qloo-llm-hackathon-developer-guide), updated 2026-10-07, specifies `https://hackathon.api.qloo.com` for event credentials. Production and staging hosts reject those keys. Authenticate with the server-side `X-Api-Key` header. Use GET requests with query parameters. `/recommendations` and `/recs` are unsupported. All documented API endpoints are available for the event; the guide explicitly demonstrates direct REST requests.
@@ -35,7 +43,7 @@ The event requires a functioning public Qloo-powered demonstration, so displayin
 
 Direct dependency metadata was checked against version-specific PyPI records: [FastAPI 0.135.1](https://pypi.org/pypi/fastapi/0.135.1/json), [HTTPX 0.28.1](https://pypi.org/pypi/httpx/0.28.1/json), [pydantic-settings 2.13.1](https://pypi.org/pypi/pydantic-settings/2.13.1/json), [Uvicorn 0.41.0](https://pypi.org/pypi/uvicorn/0.41.0/json), [pytest 9.0.2](https://pypi.org/pypi/pytest/9.0.2/json), [pytest-asyncio 1.3.0](https://pypi.org/pypi/pytest-asyncio/1.3.0/json). They declare MIT, BSD-3-Clause, or Apache-2.0 licenses. These allow integration with MIT-authored application code when their notices and other license obligations are preserved. A release must also inventory resolved transitive packages and retain their license texts; the direct dependency review alone is not a complete distribution audit.
 
-The local installed direct/transitive inventory is now recorded in [DEPENDENCIES.md](DEPENDENCIES.md), including certifi's MPL-2.0 exception to an all-permissive description. The final container inventory remains pending because Docker was not run.
+The local installed direct/transitive inventory is now recorded in [DEPENDENCIES.md](DEPENDENCIES.md), including certifi's MPL-2.0 exception to an all-permissive description. Docker build and startup succeeded in GitHub Actions and on the designated LAN server. A complete container component/license inventory remains pending; successful execution does not establish that audit.
 
 ## Authored zone and fixture provenance
 

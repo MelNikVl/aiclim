@@ -10,6 +10,19 @@ The default **Demo data** mode runs locally with 18 fictional venues and authore
 
 A server-side live adapter implements the documented event `GET /search` and `GET /v2/insights` surfaces. **No Qloo credential was available during development. Authenticated integration, city coverage, public deployment and the Qloo-versus-LLM-only comparison remain unverified. This project is not submission-ready.** Live failures never silently switch to synthetic results.
 
+## LAN server
+
+The designated development/runtime server is `nik@192.168.0.15`, with a separate checkout at `/home/nik/tastedistrict` and a dedicated `tastedistrict` container. Its LAN demo address is [192.168.0.15:8000](http://192.168.0.15:8000). Use this server for ongoing deployment and runtime checks; workstation localhost is an optional development fallback. See [deployment instructions](docs/DEPLOY.md) and the [verification record](docs/VERIFICATION.md) for observed deployment status. A LAN address is not the public hackathon demo URL.
+
+```sh
+ssh nik@192.168.0.15
+cd /home/nik/tastedistrict
+docker compose ps
+docker compose logs --tail 50 tastedistrict
+```
+
+Port 8000 had no listener in the pre-deployment `ss -ltn` check. It is now bound specifically to `192.168.0.15` by TasteDistrict. The complete port check and operating procedure are in [DEPLOY.md](docs/DEPLOY.md).
+
 ## Run locally
 
 Python 3.11 or later:
@@ -27,22 +40,38 @@ Try the example searches **Nina Simone**, **Amélie**, **The Little Prince**. Se
 
 ## Enable live Qloo
 
-In the server's private `.env` or hosting environment, set:
+Request a **hackathon event key** through the [official API key request form](https://forms.gle/zz12orkLHTAneLGz6), linked from the [event developer guide](https://docs.qloo.com/reference/qloo-llm-hackathon-developer-guide#getting-your-api-key) and the current [Devpost event](https://qloo.devpost.com/). Qloo manually approves requests and delivers keys by email, normally within a few business days. The form requires a project idea: describe TasteDistrict's cultural-favorites-to-city-places workflow. Registration, form submission and agreement acceptance must be completed by the human entrant. Event keys work with the event host below, not production/staging. Sources and quota uncertainties are recorded in [SOURCES.md](docs/SOURCES.md).
+
+On the designated server, edit the existing private environment file:
+
+```sh
+ssh nik@192.168.0.15
+cd /home/nik/tastedistrict
+nano .env
+```
+
+Set these values in **`/home/nik/tastedistrict/.env`**:
 
 ```dotenv
 DATA_MODE=live
 QLOO_API_KEY=<your event credential, server only>
 QLOO_BASE_URL=https://hackathon.api.qloo.com
-APP_SECRET=<a random value of at least 32 characters>
 ```
 
-Never enter a key in the browser, commit it, paste it into a prompt, or include it in logs. Do not add an account or accept new terms as part of this setup. Restart the server after changing settings. The only outbound API host is the documented event host; redirects are disabled. The assigned credential's terms/quota and live response shape must be checked first; see [sources and restrictions](docs/SOURCES.md).
+Preserve the existing generated `APP_SECRET`. This file already has owner-only permissions (`600`) and is ignored by Git. Never enter a key in the browser, commit it, paste it into a prompt, or include it in logs. The only outbound API host is the documented event host; redirects are disabled. Check the assigned credential's terms/quota and perform the bounded live smoke before activating the running service:
 
-```powershell
-.\.venv\Scripts\python.exe scripts/live_smoke.py
+```sh
+docker compose config --quiet
+docker compose run --rm --no-deps --entrypoint python \
+  -v "$PWD/scripts:/smoke:ro" tastedistrict /smoke/live_smoke.py
+# If the smoke check passes:
+docker compose up -d --force-recreate
+curl --fail http://192.168.0.15:8000/api/config
 ```
 
-The smoke command refuses demo mode. In live mode it spends a bounded allowance on real searches and recommendations and prints a **summary only**, never raw responses or the key. It must pass before claiming a working integration. Three useful zones require several unique eligible venues in each; sparse coverage becomes a clearly labeled city-place list. If New York coverage is inadequate, investigate another city before adding it to the supported list.
+**Editing `.env` requires recreating the container. `docker restart` alone keeps its previous environment.** An environment-only update does not need an image rebuild. Use `docker compose config --quiet`; the verbose version can expose resolved environment values.
+
+The smoke command refuses demo mode. In live mode it spends a bounded allowance on real searches and recommendations and prints a **summary only**, never raw responses or the key. It must pass before claiming a working integration. A config response with `mode=live` confirms only the selected configuration; verify real search/results in the browser too. Three useful zones require several unique eligible venues in each; sparse coverage becomes a clearly labeled city-place list. If New York coverage is inadequate, investigate another city before adding it to the supported list.
 
 ## Architecture
 

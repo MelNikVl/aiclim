@@ -51,6 +51,15 @@
   }
   function clearError() { ui["app-error"].hidden = true; }
 
+  function updateDataMode(hasLiveResults = false) {
+    ui["mode-badge"].textContent = isDemo() ? "Demo data" : hasLiveResults ? "Live Qloo results" : "Qloo live mode configured";
+    ui["data-notice-text"].textContent = isDemo()
+      ? "Demo data · Real cultural labels, fictional places and synthetic affinities. Explore an illustrative experience, not verified city recommendations."
+      : hasLiveResults
+        ? "Live Qloo results · This discovery used a successful live Qloo response. Discovery zones are authored groupings, not official neighborhood boundaries. Check each place before visiting."
+        : "Qloo live mode is configured. A successful real recommendation request is still needed to verify the integration. Discovery zones are authored groupings, not official neighborhood boundaries.";
+  }
+
   async function loadConfig() {
     clearError();
     try {
@@ -59,11 +68,8 @@
       state.config = config;
       ui["city-select"].replaceChildren(...config.cities.map((city) => { const opt = make("option", "", city.name); opt.value = city.id; return opt; }));
       ui["city-select"].disabled = false;
-      ui["mode-badge"].textContent = isDemo() ? "Demo data" : "Live Qloo data";
+      updateDataMode();
       ui["mode-badge"].classList.remove("is-error");
-      ui["data-notice-text"].textContent = isDemo()
-        ? "Demo data · Real cultural labels, fictional places and synthetic affinities. Explore an illustrative experience, not verified city recommendations."
-        : "Live Qloo data · Discovery zones are authored groupings, not official neighborhood boundaries. Check each place before visiting.";
       ui["data-details-list"].replaceChildren(...(config.warnings || []).filter((warning) => typeof warning === "string").map((warning) => make("li", "", warning)));
       updateSelection();
     } catch (error) {
@@ -254,6 +260,7 @@
   }
 
   function renderResults(result, previous) {
+    updateDataMode(result.mode === "live");
     const zones = result.zones;
     const places = zones.flatMap((zone) => Array.isArray(zone.places) ? zone.places : []);
     const cityName = safeText(result.city?.name, "your city");
@@ -329,6 +336,7 @@
       await api("/api/session/reset", { method: "POST" });
       if (!keepTastes) state.tastes = [];
       state.results = null; state.excluded.clear(); state.replaceIndex = null; state.dirty = false;
+      updateDataMode();
       ui["results-section"].hidden = true; ui["zone-cards"].replaceChildren();
       ui["search-status"].textContent = keepTastes ? "New scenario started. Your favorites are ready to discover again." : "A fresh start. Find a few things you love.";
       byId("taste-builder").scrollIntoView({ behavior: "smooth", block: "start" });
